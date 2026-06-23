@@ -1,0 +1,8 @@
+{
+  "ignore": [
+    "*.json",
+    "history.json",
+    "liveData.json",
+    "alerts.json"
+  ]
+}
