@@ -47,38 +47,25 @@ router.get(
 // HISTORY
 // ======================
 
-router.get(
-  "/history/:deviceId",
-  async (req, res) => {
+router.get("/history/:deviceId", async (req, res) => {
+  try {
 
-    try {
+    const days = parseInt(req.query.days) || 2;
 
-      const data =
-        await SensorData
-          .find({
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
 
-            deviceId:
-              req.params.deviceId
+    const data = await SensorData.find({
+      deviceId: req.params.deviceId,
+      timestamp: { $gte: startDate }
+    })
+    .sort({ timestamp: 1 });
 
-          })
-          .sort({
-            timestamp: 1
-          })
-          .limit(1000);
+    res.json(data);
 
-      res.json(data);
-
-    } catch (err) {
-
-      console.log(err);
-
-      res.status(500).json({
-        error: err.message
-      });
-
-    }
-
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
-);
+});
 
 module.exports = router;
