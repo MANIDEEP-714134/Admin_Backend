@@ -1,49 +1,103 @@
 const express = require("express");
 const router = express.Router();
 
-const {
-  readJson,
-  writeJson
-} = require("../utils/fileStorage");
+const Alert =
+require("../models/Alert");
 
-router.get("/", (req, res) => {
+// ======================
+// GET ALL ALERTS
+// ======================
 
-  const alerts =
-    readJson("./alerts.json");
+router.get(
+  "/",
+  async (req, res) => {
 
-  res.json(alerts);
+    try {
 
-});
+      const alerts =
+        await Alert.find()
+          .sort({
+            timestamp: -1
+          });
 
-router.get("/:deviceId", (req, res) => {
+      res.json(alerts);
 
-  const { deviceId } =
-    req.params;
+    } catch (err) {
 
-  const alerts =
-    readJson("./alerts.json");
+      console.log(err);
 
-  const filtered =
-    alerts.filter(
-      a =>
-      a.deviceId === deviceId
-    );
+      res.status(500).json({
+        error: err.message
+      });
 
-  res.json(filtered);
+    }
 
-});
+  }
+);
 
-router.delete("/", (req, res) => {
+// ======================
+// GET DEVICE ALERTS
+// ======================
 
-  writeJson(
-    "./alerts.json",
-    []
-  );
+router.get(
+  "/:deviceId",
+  async (req, res) => {
 
-  res.json({
-    success: true
-  });
+    try {
 
-});
+      const alerts =
+        await Alert.find({
+
+          deviceId:
+            req.params.deviceId
+
+        })
+        .sort({
+          timestamp: -1
+        });
+
+      res.json(alerts);
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+        error: err.message
+      });
+
+    }
+
+  }
+);
+
+// ======================
+// DELETE ALL ALERTS
+// ======================
+
+router.delete(
+  "/",
+  async (req, res) => {
+
+    try {
+
+      await Alert.deleteMany({});
+
+      res.json({
+        success: true
+      });
+
+    } catch (err) {
+
+      console.log(err);
+
+      res.status(500).json({
+        error: err.message
+      });
+
+    }
+
+  }
+);
 
 module.exports = router;
