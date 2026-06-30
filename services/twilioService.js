@@ -1,16 +1,18 @@
 const twilio = require("twilio");
 
 console.log("========== TWILIO SERVICE INITIALIZED ==========");
+console.log("SID:", process.env.TWILIO_ACCOUNT_SID);
+console.log(
+  "TOKEN:",
+  process.env.TWILIO_AUTH_TOKEN ? "Loaded" : "Missing"
+);
+console.log("PHONE:", process.env.TWILIO_PHONE_NUMBER);
+console.log("===============================================");
 
 const client = twilio(
   process.env.TWILIO_ACCOUNT_SID,
   process.env.TWILIO_AUTH_TOKEN
 );
-
-console.log("Twilio Client Created");
-console.log("Twilio Number:", process.env.TWILIO_PHONE_NUMBER);
-console.log("===============================================");
-
 // ======================
 // SEND SMS
 // ======================
